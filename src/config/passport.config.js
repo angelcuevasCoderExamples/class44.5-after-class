@@ -51,14 +51,13 @@ const initializePassport = ()=>{
         session:false,
         passReqToCallback: true,
     }, async (req, email, password, done)=>{
-        console.log("LOGIN IN")
         try {               
 
             const user = await usersService.getByProperty("email",email);
             if(!user)  return done(null, false, {message:'user does not exist'})
 
             if(!isValidPassword(user, password)) return done(null, false, {message:'Incorrect password'})
-
+            //update last_connection    
             return done(null, user)
 
         } catch (error) {

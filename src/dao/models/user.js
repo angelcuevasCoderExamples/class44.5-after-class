@@ -17,6 +17,17 @@ const userSchema = new mongoose.Schema({
         type:String,
         default: 'user'
     },
+    documents: {
+        type: [{
+            name: String,
+            reference: String
+        }],
+        default: []   
+    },
+    last_connection:{
+        type: String,
+        default: null
+    } 
     
 })
 

@@ -21,19 +21,23 @@ class UsersService {
     }
 
 
-    async create(toy){
-        return await this.dao.create(toy);
+    async create(user){
+        return await this.dao.create(user);
     }
 
-    async update(id, toy){
-        console.log('---->', id, toy)
+    async update(id, user){
         await this.dao.getById(id);
-        return await this.dao.update(id, toy);
+        return await this.dao.update(id, user);
     }
 
     async delete(id){
         await this.dao.getById(id);
         return await this.dao.delete(id);
+    }
+
+    async setLastConnection(id){
+        const user = await this.getById(id);
+        await this.update(id, {last_connection: new Date().toLocaleString()})
     }
 }
 

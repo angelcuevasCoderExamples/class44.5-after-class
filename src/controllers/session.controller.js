@@ -10,9 +10,7 @@ const mailingService = new MailingService();
 
 class SessionController {
     static async registerUser(req, res) {
-        //await MailingService.sendRegisterMail(req.user.email) 
-        req.logger.info(`User registed succesfully`)
-        res.send({ status: 'success', message: 'User registered successfuly' })
+        res.send({ status: 'success', message: 'User registered successfuly', payload: req.user })
     }
     static async getRegisterError(req, res, next) {
         try {
@@ -25,7 +23,7 @@ class SessionController {
         } catch (error) {
             next(error)
         }
-        //res.status(400).send({ status: 'error', error: 'There has been a problem with the register process' })
+       
     }
     static async login(req, res) {
         try {
@@ -41,6 +39,7 @@ class SessionController {
             }
             const token = jwt.sign(serializableUser, jwtSecret, { expiresIn: '1h' })
             res.cookie('jwtCookie', token);
+            await usersService.setLastConnection(_id)
             res.send({ status: 'success', message: 'User logged successfuly' })
         } catch (error) {
             res.status(error.status || 500).send({ status: 'error', message: error.message })
@@ -50,9 +49,7 @@ class SessionController {
         res.status(400).send({status:'error', error:'There has been a problem with the login process'})
     }
     static async logout(req, res){
-        // req.session.destroy((err)=>{
-        //     if(err) return res.status(500).send('there was an error destroying session')
-        // })
+        await usersService.setLastConnection(_id)
         res.clearCookie('jwtCookie')
         res.redirect('/login')
     }
