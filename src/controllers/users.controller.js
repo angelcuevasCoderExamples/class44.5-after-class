@@ -17,8 +17,8 @@ class UsersControrller {
         const userId = req.params.userId; 
 
         try {
-            await usersService.changeRole(userId);
-            res.send({status:'success'})
+            const payload = await usersService.changeRole(userId);
+            res.send({status:'success', payload: payload})
         } catch (error) {
             res.status(500).send({status:'error', error: error.message})
         }

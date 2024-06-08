@@ -77,6 +77,7 @@ class UsersService {
 
 
         await this.update(user._id.toString(), {$set: {role: user.role}})
+        return await this.getById(userId)
     }
 }
 
