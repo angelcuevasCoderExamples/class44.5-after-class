@@ -17,20 +17,7 @@ class UsersControrller {
         const userId = req.params.userId; 
 
         try {
-            const user = await usersService.getById(userId);
-            
-            if(!['user', 'premium'].includes(user.role)){
-                throw new Error('User has invalid role')
-            }
-
-            if(user.role == 'user'){
-                user.role = 'premium'
-            }else{
-                user.role = 'user'
-            }
-
-            await usersService.update(user._id.toString(), {$set: {role: user.role}})
-
+            await usersService.changeRole(userId);
             res.send({status:'success'})
         } catch (error) {
             res.status(500).send({status:'error', error: error.message})
@@ -51,7 +38,7 @@ class UsersControrller {
         try {
             const {uid} = req.params; 
             const result = await usersService.addProfilePicture(uid, req.file)
-            
+
             res.send({status:'success', payload: result})
         } catch (error) {
             res.status(500).send({status:'error', error: error.message})

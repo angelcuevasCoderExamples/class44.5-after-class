@@ -54,6 +54,30 @@ class UsersService {
         await this.getById(id);
         return await this.update(id, {profile_picture: file.path.split('public')[1].replace(/\\/g,'/')})
     }
+
+    async changeRole(userId){
+        const user = await this.getById(userId);
+        if(user.role == 'user'){
+            if(!user.documents.some(d=>d.name.includes('Identificacion'))){
+                throw new Error('Missing documents')
+            }
+            if(!user.documents.some(d=>d.name.includes('Comprobante de domicilio'))){
+                throw new Error('Missing documents')
+            }
+            if(!user.documents.some(d=>d.name.includes('Comprobante de estado de cuenta'))){
+                throw new Error('Missing documents')
+            }
+        }
+
+        if(!['user', 'premium'].includes(user.role)){
+            throw new Error('User has invalid role')
+        }
+
+        user.role = user.role == 'user' ?  'premium' : 'user'
+
+
+        await this.update(user._id.toString(), {$set: {role: user.role}})
+    }
 }
 
 
